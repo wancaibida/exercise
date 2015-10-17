@@ -11,6 +11,7 @@
     <asset:stylesheet src="bootstrap/css/bootstrap.min.css"/>
     <title>最新微博</title>
 </head>
+
 <body>
 
 <main>
@@ -43,6 +44,7 @@
     </ul>
 </nav>
 <asset:javascript src="jquery-2.1.3.js"/>
+<asset:javascript src="index/index.js"/>
 <asset:javascript src="bootstrap/js/bootstrap.min.js"/>
 </body>
 </html>
