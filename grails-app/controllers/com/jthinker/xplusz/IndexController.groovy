@@ -7,38 +7,38 @@ import javax.annotation.Resource
 
 class IndexController {
 
-    String client_id = "2725511718"
-    String appSecret = "f3ce0d6f7092e05244c6198af042901a"
-    String appKey = "2725511718"
+    private static final String CLIENT_ID = "2725511718"
+    private static final String APPSECRET = "f3ce0d6f7092e05244c6198af042901a"
+    private static final String APPKEY = "2725511718"
 
 
-    String redirectUrl = "http://xplusz.jthinker.com/index/callback"
+    private static final String REDIRECTURL = "http://xplusz.jthinker.com/index/callback"
 
 
-    String url_publist = "https://api.weibo.com/2/statuses/public_timeline.json"
-    String tokenUrl = "https://api.weibo.com/oauth2/access_token";
+    private static final String URL_PUBLIST = "https://api.weibo.com/2/statuses/public_timeline.json"
+    private static final String TOKEN_URL = "https://api.weibo.com/oauth2/access_token";
 
     @Resource
     HttpService httpService;
 
     def index() {
         if (!session.login) {
-            redirect(url: "https://api.weibo.com/oauth2/authorize?client_id=" + appKey + "&redirect_uri=" + redirectUrl)
+            redirect(url: "https://api.weibo.com/oauth2/authorize?client_id=" + APPKEY + "&redirect_uri=" + REDIRECTURL)
         }
     }
 
     def callback() {
         def code = params.code
 
-        def params = new HashMap();
-        params.put("client_id", client_id);
-        params.put("client_secret", appSecret);
-        params.put("grant_type", "authorization_code")
-        params.put("redirect_uri", redirectUrl);
-        params.put("code", code)
+        def postParams = new HashMap();
+        postParams.put("client_id", CLIENT_ID);
+        postParams.put("client_secret", APPSECRET);
+        postParams.put("grant_type", "authorization_code")
+        postParams.put("redirect_uri", REDIRECTURL);
+        postParams.put("code", code)
 
 
-        def plain = httpService.req(tokenUrl, params)
+        def plain = httpService.req(TOKEN_URL, postParams)
         def json = JSON.parse(plain);
 
         if (json) {
@@ -52,7 +52,7 @@ class IndexController {
 
     def list() {
 
-        def params = new HashMap();
+        def getParams = new HashMap();
 
         if (!session.token) {
             render(contentType: "application/json") {
@@ -60,15 +60,17 @@ class IndexController {
             }
         }
 
-        params.put("access_token", session.token);
-//        params.put("client_secret", appSecret);
+        getParams.put("access_token", session.token);
+        getParams.put("page", WebUtils.param(params, "page", 1))
+        getParams.put("count", WebUtils.param(params, "pageSize", 10))
+//        params.put("client_secret", APPSECRET);
 //        params.put("grant_type", "authorization_code")
-//        params.put("redirect_uri", redirectUrl);
+//        params.put("redirect_uri", REDIRECTURL);
 
-        String plain = httpService.req(url_publist, params, "GET")
+        String plain = httpService.req(URL_PUBLIST, getParams, "GET")
 
         render(contentType: "application/json") {
-            books = JSON.parse(plain)
+            JSON.parse(plain)
         }
     }
 }

@@ -8,7 +8,7 @@ import org.apache.commons.lang.math.NumberUtils
  */
 class WebUtils {
 
-    int param(Map<?, ?> params, String key, int ... defaults) {
+    static int param(Map<?, ?> params, String key, int ... defaults) {
         return NumberUtils.toInt((String) params.get(key), defaults.length > 0 ? defaults[0] : 0);
     }
 }

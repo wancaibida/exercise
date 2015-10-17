@@ -6,6 +6,10 @@
 --%>
 
 <%@ page contentType="text/html;charset=UTF-8" %>
+<%
+    String path = request.getContextPath();
+    String basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + path + "/";
+%>
 <html>
 <head>
     <asset:stylesheet src="bootstrap/css/bootstrap.min.css"/>
@@ -16,11 +20,6 @@
 
 <main>
     <ul class="list-group">
-        <li class="list-group-item">Cras justo odio</li>
-        <li class="list-group-item">Dapibus ac facilisis in</li>
-        <li class="list-group-item">Morbi leo risus</li>
-        <li class="list-group-item">Porta ac consectetur ac</li>
-        <li class="list-group-item">Vestibulum at eros</li>
     </ul>
 </main>
 
@@ -46,5 +45,8 @@
 <asset:javascript src="jquery-2.1.3.js"/>
 <asset:javascript src="index/index.js"/>
 <asset:javascript src="bootstrap/js/bootstrap.min.js"/>
+<script>
+    var basePath = "<%=basePath%>";
+</script>
 </body>
 </html>
