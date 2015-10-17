@@ -1,5 +1,6 @@
 package com.jthinker.xplusz
 
+import grails.converters.JSON
 import xplusz.HttpService
 
 import javax.annotation.Resource
@@ -12,10 +13,9 @@ class IndexController {
 
 
     String redirectUrl = "http://xplusz.jthinker.com/index/callback"
-    String url = apiUrl + "?source=" + appKey
 
 
-    String apiUrl = "https://api.weibo.com/2/statuses/public_timeline.json"
+    String url_publist = "https://api.weibo.com/2/statuses/public_timeline.json"
     String tokenUrl = "https://api.weibo.com/oauth2/access_token";
 
     @Resource
@@ -38,24 +38,37 @@ class IndexController {
         params.put("code", code)
 
 
+        def plain = httpService.req(tokenUrl, params)
+        def json = JSON.parse(plain);
 
-        def plain = httpService.post(tokenUrl, params)
-
-        render(contentType: "application/json") {
-            books = plain
+        if (json) {
+            session.login = true
+            session.token = json.access_token
+            redirect(controller: 'index', action: 'index')
         }
-
 
     }
 
 
     def list() {
-        render(contentType: "application/json") {
-            books = array {
-                for (b in results) {
-                    book title: b.title
-                }
+
+        def params = new HashMap();
+
+        if (!session.token) {
+            render(contentType: "application/json") {
+                list = Collections.emptyList()
             }
+        }
+
+        params.put("access_token", session.token);
+//        params.put("client_secret", appSecret);
+//        params.put("grant_type", "authorization_code")
+//        params.put("redirect_uri", redirectUrl);
+
+        String plain = httpService.req(url_publist, params, "GET")
+
+        render(contentType: "application/json") {
+            books = JSON.parse(plain)
         }
     }
 }
