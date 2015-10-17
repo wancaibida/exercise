@@ -61,11 +61,14 @@ class IndexController {
         }
 
         getParams.put("access_token", session.token);
+        //TODO page没用?
         getParams.put("page", WebUtils.param(params, "page", 1))
         getParams.put("count", WebUtils.param(params, "pageSize", 10))
 //        params.put("client_secret", APPSECRET);
 //        params.put("grant_type", "authorization_code")
 //        params.put("redirect_uri", REDIRECTURL);
+
+        println getParams
 
         String plain = httpService.req(URL_PUBLIST, getParams, "GET")
 
